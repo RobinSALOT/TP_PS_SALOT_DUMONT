@@ -17,23 +17,23 @@ void welcome() {
 int executeCommand(char *command) {
     pid_t pid = fork();
 
-    if (pid == -1) {
+    iif (pid == -1) {
         perror("fork");
         exit(EXIT_FAILURE);
     } else if (pid == 0) {
         // In the child process
-        if (system(command) == -1) {
-            perror("system");
-            exit(EXIT_FAILURE);
-        }
-
+        char *argv[] = {command, NULL};
+   	    if (execlp(command, command, (char *) NULL) == -1) {
+      	    perror("execlp");
+	        exit(EXIT_FAILURE);
+	    }
         exit(EXIT_SUCCESS);
     } else {
         // In the parent process, wait for the child to finish
         wait(NULL);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 int main() {
