@@ -46,20 +46,15 @@ int executeCommand(char *command) {
     } else if (pid == 0) {
         // In the child process
 
-        // Tokenize the command and its arguments
-        char *args[10]; // Adjust the size based on your needs
-        char *token = strtok(command, " ");
-        int i = 0;
-
-        while (token != NULL) {
-            args[i++] = token;
-            token = strtok(NULL, " ");
+        // Find the first space to separate the command name from its arguments
+        char *space = strchr(command, ' ');
+        if (space != NULL) {
+            *space = '\0'; // Terminate the string at the space, effectively ignoring the arguments
         }
 
-        args[i] = NULL;
-        if (strcmp(args[0], "exit") != 0) {
-            // Execute the command only if it's not the 'exit' command
-            execvp(args[0], args);
+        // Execute the command without arguments
+        if (strcmp(command, "exit") != 0) {
+            execlp(command, command, (char *)NULL);
         }
 
         // Exit the child process
